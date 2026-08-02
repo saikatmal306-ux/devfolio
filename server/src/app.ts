@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import { env } from "./config/env";
 import routes from "./routes";
+import { errorHandler } from "./middleware/error.middleware";
 
 const app = express();
 
@@ -61,5 +62,7 @@ app.use(compression());
 */
 
 app.use("/api/v1", routes);
+
+app.use(errorHandler);
 
 export default app;
