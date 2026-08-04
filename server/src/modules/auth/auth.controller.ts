@@ -3,7 +3,7 @@ import { asyncHandler } from "../../shared/helpers/asyncHandler";
 
 import { registerSchema, loginSchema, } from "./auth.validation";
 
-import { registerUser, loginUser, } from "./auth.service";
+import { registerUser, loginUser, getCurrentUser, } from "./auth.service";
 
 export const register = asyncHandler(
   async (req: Request, res: Response) => {
@@ -44,6 +44,26 @@ export const login = asyncHandler(
     res.status(200).json({
       success: true,
       message: "Login successful",
+    });
+  }
+);
+
+export const me = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+
+    const user = await getCurrentUser(
+      userId as string
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
+      },
     });
   }
 );
