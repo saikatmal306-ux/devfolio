@@ -12,6 +12,7 @@ export const authenticate = (
   _res: Response,
   next: NextFunction
 ) => {
+  
   const token = req.cookies?.token;
 
   if (!token) {
