@@ -18,4 +18,10 @@ export interface IProfile {
   linkedin?: string;
 
   skills: string[];
+
+  profileImage?: string;
+
+  resumeUrl?: string;
+
+  username: string;
 }

@@ -30,17 +30,20 @@ export const createProjectSchema =
         "At least one technology is required"
       ),
 
-    githubUrl: z
-      .url("Invalid GitHub URL")
-      .optional(),
+    githubUrl: z.preprocess(
+  (val) => val === "" ? undefined : val,
+  z.url("Invalid GitHub URL").optional()
+),
 
-    liveUrl: z
-      .url("Invalid Live URL")
-      .optional(),
+liveUrl: z.preprocess(
+  (val) => val === "" ? undefined : val,
+  z.url("Invalid Live URL").optional()
+),
 
-    image: z
-      .url("Invalid image URL")
-      .optional(),
+image: z.preprocess(
+  (val) => val === "" ? undefined : val,
+  z.url("Invalid image URL").optional()
+),
 
     featured: z
       .boolean()

@@ -35,6 +35,25 @@ export const getMyProjects = async (
   return projects;
 };
 
+export const getProjectById = async (
+  userId: string,
+  projectId: string
+) => {
+  const project = await Project.findOne({
+    _id: projectId,
+    user: userId,
+  });
+
+  if (!project) {
+    throw new AppError(
+      "Project not found",
+      404
+    );
+  }
+
+  return project;
+};
+
 export const updateProject = async (
   userId: string,
   projectId: string,

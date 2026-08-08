@@ -76,3 +76,10 @@ export const getCurrentUser = async (
 
   return user;
 };
+
+export const logoutUser = () => {
+  return {
+    success: true,
+    message: "Logged out successfully",
+  };
+};

@@ -14,6 +14,14 @@ const profileSchema = new Schema<IProfile>(
       unique: true,
     },
 
+    username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    },
+
     fullName: {
       type: String,
       required: true,
@@ -58,6 +66,16 @@ const profileSchema = new Schema<IProfile>(
         trim: true,
       },
     ],
+
+    profileImage: {
+      type: String,
+      trim: true,
+    },
+
+    resumeUrl: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,

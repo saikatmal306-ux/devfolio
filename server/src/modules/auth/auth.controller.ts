@@ -3,7 +3,7 @@ import { asyncHandler } from "../../shared/helpers/asyncHandler";
 
 import { registerSchema, loginSchema, } from "./auth.validation";
 
-import { registerUser, loginUser, getCurrentUser, } from "./auth.service";
+import { registerUser, loginUser, getCurrentUser, logoutUser } from "./auth.service";
 
 export const register = asyncHandler(
   async (req: Request, res: Response) => {
@@ -67,3 +67,14 @@ export const me = asyncHandler(
     });
   }
 );
+
+export const logout = (
+  _req: Request,
+  res: Response
+) => {
+  res.clearCookie("token");
+
+  const result = logoutUser();
+
+  res.status(200).json(result);
+};

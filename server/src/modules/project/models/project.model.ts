@@ -32,16 +32,19 @@ const projectSchema =
       },
 
       githubUrl: {
-        type: String,
-      },
+  type: String,
+  trim: true,
+},
 
       liveUrl: {
-        type: String,
-      },
+  type: String,
+  trim: true,
+},
 
       image: {
-        type: String,
-      },
+  type: String,
+  default: "",
+},
 
       featured: {
         type: Boolean,

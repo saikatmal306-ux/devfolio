@@ -3,8 +3,13 @@ import { Router } from "express";
 import { authenticate }
 from "../../middleware/auth.middleware";
 
-import { create, getMine, update, remove }
-from "./project.controller";
+import {
+  create,
+  getMine,
+  getOne,
+  update,
+  remove,
+} from "./project.controller";
 
 const router = Router();
 
@@ -18,6 +23,12 @@ router.get(
   "/",
   authenticate,
   getMine
+);
+
+router.get(
+  "/:id",
+  authenticate,
+  getOne
 );
 
 router.patch(

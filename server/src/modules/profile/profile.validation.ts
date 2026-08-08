@@ -1,6 +1,12 @@
 import { z } from "zod";
 
 export const createProfileSchema = z.object({
+
+  username: z
+  .string()
+  .min(3)
+  .max(30),
+
   fullName: z
     .string()
     .trim()
@@ -40,6 +46,12 @@ export const createProfileSchema = z.object({
   skills: z
     .array(z.string().trim())
     .min(1, "At least one skill is required"),
+
+  profileImage:
+  z.string().url().optional(),
+
+  resumeUrl:
+    z.string().url().optional(),
 });
 
 export type CreateProfileInput =

@@ -12,9 +12,11 @@ import {
 } from "./project.validation";
 
 import {
-  createProject, getMyProjects,
-   updateProject,
-   deleteProject,
+  createProject,
+  getMyProjects,
+  getProjectById,
+  updateProject,
+  deleteProject,
 } from "./project.service";
 
 export const create = asyncHandler(
@@ -65,6 +67,30 @@ export const getMine =
       });
     }
   );
+
+  export const getOne = asyncHandler(
+  async (
+    req: Request,
+    res: Response
+  ) => {
+    const userId =
+      req.user?.userId;
+
+    const projectId =
+      req.params.id as string;
+
+    const project =
+      await getProjectById(
+        userId as string,
+        projectId
+      );
+
+    res.status(200).json({
+      success: true,
+      data: project,
+    });
+  }
+);
 
   export const update = asyncHandler(
   async (

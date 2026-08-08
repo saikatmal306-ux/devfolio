@@ -19,7 +19,7 @@ router.get(
 );
 
 router.patch(
-  "/",
+  "/me",
   authenticate,
   update
 );
