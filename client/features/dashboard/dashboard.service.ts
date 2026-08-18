@@ -4,7 +4,7 @@ import { getExperiences } from "@/features/experience/experience.service";
 import { getEducation } from "@/features/education/education.service";
 
 export const getDashboardStats = async () => {
-  
+  const profile = await getMyProfile();
 
   const projectsResponse = await getProjects();
 
