@@ -17,6 +17,7 @@ import {
   getProjectById,
   updateProject,
   deleteProject,
+  getProjectsByUsername,
 } from "./project.service";
 
 export const create = asyncHandler(
@@ -123,6 +124,27 @@ export const getMine =
     });
   }
 );
+
+export const getByUsername =
+  asyncHandler(
+    async (
+      req: Request,
+      res: Response
+    ) => {
+      const username =
+        req.params.username as string;
+
+      const projects =
+        await getProjectsByUsername(
+          username
+        );
+
+      res.status(200).json({
+        success: true,
+        data: projects,
+      });
+    }
+  );
 
 export const remove = asyncHandler(
   async (

@@ -1,21 +1,28 @@
 import { getMyProfile } from "@/features/profile/profile.service";
+import { getProjects } from "@/features/project/project.service";
+import { getExperiences } from "@/features/experience/experience.service";
+import { getEducation } from "@/features/education/education.service";
 
-export const getDashboardStats =
-  async () => {
-    const profile =
-      await getMyProfile();
+export const getDashboardStats = async () => {
+  const profile = await getMyProfile();
 
-    return {
-      success: true,
+  const projectsResponse = await getProjects();
 
-      data: {
-        projects: 1,
+  const experiencesResponse = await getExperiences();
 
-        experiences: 0,
+  const educationsResponse = await getEducation();
 
-        educations: 0,
+  return {
+    success: true,
 
-        profileCompletion: 100,
-      },
-    };
+    data: {
+      projects: projectsResponse.data.length,
+
+      experiences: experiencesResponse.data.length,
+
+      educations: educationsResponse.data.length,
+
+      profileCompletion: 100,
+    },
   };
+};

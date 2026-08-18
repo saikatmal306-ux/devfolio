@@ -17,11 +17,22 @@ export const useRegister =
       mutationFn: registerUser,
     });
 
-export const useLogin =
-  () =>
-    useMutation({
-      mutationFn: loginUser,
-    });
+export const useLogin = () => {
+  const setUser = useAuthStore(
+    (state) => state.setUser
+  );
+
+  return useMutation({
+    mutationFn: loginUser,
+
+    onSuccess: async () => {
+      const res =
+        await getCurrentUser();
+
+      setUser(res.data);
+    },
+  });
+};
 
 export const useCurrentUser =
   () =>

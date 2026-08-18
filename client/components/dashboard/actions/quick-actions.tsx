@@ -42,26 +42,33 @@ export default function QuickActions() {
             Quick Actions
           </h2>
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            {actions.map((action) => {
-              const Icon = action.icon;
+          <div className="grid grid-cols-2 gap-3">
+  {actions.map((action) => {
+    const Icon = action.icon;
 
-              return (
-                <Link
-                href={action.href}
-                key={action.title}
-                >
-                <Button
-                    variant="outline"
-                    className="h-20 w-full justify-start gap-3"
-                >
-                    <Icon className="size-5" />
-                    {action.title}
-                </Button>
-                </Link>
-              );
-            })}
-          </div>
+    return (
+      <Link
+        href={action.href}
+        key={action.title}
+      >
+        <Button
+  variant="outline"
+  className="
+    h-20
+    w-full
+    gap-2
+    whitespace-normal
+    text-center
+    flex-col
+  "
+>
+          <Icon className="size-5" />
+          {action.title}
+        </Button>
+      </Link>
+    );
+  })}
+</div>
         </CardContent>
       </Card>
     </motion.div>

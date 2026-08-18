@@ -10,7 +10,7 @@ import {
 } from "./profile.validation";
 
 import {
-  createProfile,  getMyProfile, updateProfile
+  createProfile,  getMyProfile, updateProfile, getProfileByUsername
 } from "./profile.service";
 
 
@@ -79,3 +79,20 @@ export const update = asyncHandler(
     });
   }
 );
+
+export const getByUsername =
+  asyncHandler(
+    async (
+      req: Request,
+      res: Response
+    ) => {
+      const username = req.params.username as string;
+
+      const profile = await getProfileByUsername(username);
+
+      res.status(200).json({
+        success: true,
+        data: profile,
+      });
+    }
+  );

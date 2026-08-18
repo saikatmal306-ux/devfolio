@@ -9,6 +9,8 @@ from "../../shared/errors/AppError";
 import { UpdateProjectInput }
 from "./project.validation";
 
+import { Profile } from "../profile/models/profile.model";  
+
 export const createProject = async (
   userId: string,
   payload: CreateProjectInput
@@ -31,6 +33,29 @@ export const getMyProjects = async (
     }).sort({
       createdAt: -1,
     });
+
+  return projects;
+};
+
+export const getProjectsByUsername = async (
+  username: string
+) => {
+  const profile = await Profile.findOne({
+    username,
+  });
+
+  if (!profile) {
+    throw new AppError(
+      "Profile not found",
+      404
+    );
+  }
+
+  const projects = await Project.find({
+    user: profile.user,
+  }).sort({
+    createdAt: -1,
+  });
 
   return projects;
 };

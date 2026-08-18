@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { authenticate } from "../../middleware/auth.middleware";
 
-import { create, me, update } from "./profile.controller";
+import { create, me, update, getByUsername } from "./profile.controller";
 
 const router = Router();
 
@@ -22,6 +22,11 @@ router.patch(
   "/me",
   authenticate,
   update
+);
+
+router.get(
+  "/:username",
+  getByUsername
 );
 
 export default router;

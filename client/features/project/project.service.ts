@@ -54,3 +54,13 @@ export const deleteProject = async (
 
   return data;
 };
+
+export const getProjectsByUsername = async (
+  username: string
+) => {
+  const { data } = await api.get(
+    `/projects/user/${username}`
+  );
+
+  return data;
+};

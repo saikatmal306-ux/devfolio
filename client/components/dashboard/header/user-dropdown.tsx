@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
 import { toast } from "sonner";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import {
+  Avatar,
+  AvatarFallback,
+} from "@/components/ui/avatar";
+
 import { useAuthStore } from "@/features/auth/auth.store";
 import { useLogout } from "@/features/auth/auth.api";
 
@@ -22,23 +26,30 @@ export default function UserDropdown() {
 
   const logout = useLogout();
 
-  const user = useAuthStore((state) => state.user) as {
-    email?: string;
-  } | null;
+  const user = useAuthStore(
+    (state) => state.user
+  );
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
-  <Avatar className="cursor-pointer">
-    <AvatarFallback>
-      {user?.email?.charAt(0).toUpperCase() ?? "U"}
-    </AvatarFallback>
-  </Avatar>
-</DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        className="outline-none cursor-pointer"
+      >
+        <Avatar>
+          <AvatarFallback>
+            {user?.data?.email
+              ?.charAt(0)
+              .toUpperCase() ?? "U"}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent
+        align="end"
+        className="w-56"
+      >
         <DropdownMenuLabel>
-          {user?.email}
+          {user?.data?.email}
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
@@ -54,8 +65,11 @@ export default function UserDropdown() {
           onClick={() =>
             logout.mutate(undefined, {
               onSuccess: () => {
-                toast.success("Logged out");
-                router.push("/login");
+                toast.success(
+                  "Logged out"
+                );
+
+                router.replace("/login");
               },
             })
           }

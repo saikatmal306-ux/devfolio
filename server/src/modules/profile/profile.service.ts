@@ -72,3 +72,23 @@ export const updateProfile = async (
 
   return profile;
 };
+
+export const getProfileByUsername =
+  async (
+    username: string
+  ) => {
+
+    const profile =
+      await Profile.findOne({
+        username,
+      });
+
+    if (!profile) {
+      throw new AppError(
+        "Profile not found",
+        404
+      );
+    }
+
+    return profile;
+  };

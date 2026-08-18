@@ -3,9 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import {
-  useAuthStore,
-} from "@/features/auth/auth.store";
+import { useCurrentUser } from "@/features/auth/auth.api";
+import { useAuthStore } from "@/features/auth/auth.store";
 
 export default function ProtectedRoute({
   children,
@@ -14,20 +13,39 @@ export default function ProtectedRoute({
 }) {
   const router = useRouter();
 
-  const user =
-    useAuthStore(
-      (state) => state.user
-    );
+  const user = useAuthStore(
+    (state) => state.user
+  );
+
+  const setUser = useAuthStore(
+    (state) => state.setUser
+  );
+
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useCurrentUser();
 
   useEffect(() => {
-    if (!user) {
+    if (data && !user) {
+      setUser(data);
+    }
+  }, [data, user, setUser]);
+
+  useEffect(() => {
+    if (!isLoading && isError) {
       router.replace("/login");
     }
-  }, [user, router]);
+  }, [isLoading, isError, router]);
 
-  if (!user) {
-    return null;
+  if (isLoading) {
+    return (
+      <div className="p-8">
+        Loading...
+      </div>
+    );
   }
 
-  return children;
+  return <>{children}</>;
 }

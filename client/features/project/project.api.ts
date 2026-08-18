@@ -10,6 +10,7 @@ import {
   getProject,
   getProjects,
   updateProject,
+  getProjectsByUsername,
 } from "./project.service";
 
 import {
@@ -82,3 +83,18 @@ export const useDeleteProject = () => {
     },
   });
 };
+
+export const useProjectsByUsername = (
+  username: string
+) =>
+  useQuery({
+    queryKey: [
+      "portfolio-projects",
+      username,
+    ],
+    queryFn: () =>
+      getProjectsByUsername(
+        username
+      ),
+    enabled: !!username,
+  }); 

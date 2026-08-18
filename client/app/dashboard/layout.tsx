@@ -12,23 +12,23 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    
-    <div className="flex">
-      <DashboardSidebar />
+    <ProtectedRoute>
+      <div className="flex">
+        <DashboardSidebar />
 
-      <main
-        className="
-        flex-1
-        p-4
-        md:p-8
-        pb-20
-      "
-      >
-        {children}
-      </main>
+        <main
+          className="
+          flex-1
+          p-4
+          md:p-8
+          pb-20
+          "
+        >
+          {children}
+        </main>
 
-      <MobileNav />
-    </div>
-    
+        <MobileNav />
+      </div>
+    </ProtectedRoute>
   );
 }

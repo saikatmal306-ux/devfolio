@@ -9,6 +9,7 @@ import {
   getOne,
   update,
   remove,
+  getByUsername,
 } from "./project.controller";
 
 const router = Router();
@@ -24,6 +25,11 @@ router.get(
   authenticate,
   getMine
 );
+
+router.get(
+  "/user/:username",
+  getByUsername
+);  
 
 router.get(
   "/:id",
