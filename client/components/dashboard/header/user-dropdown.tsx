@@ -16,15 +16,19 @@ import {
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
 } from "@/components/ui/avatar";
 
 import { useAuthStore } from "@/features/auth/auth.store";
 import { useLogout } from "@/features/auth/auth.api";
+import { useProfile } from "@/features/profile/profile.api";
 
 export default function UserDropdown() {
   const router = useRouter();
 
   const logout = useLogout();
+
+  const { data: profile } = useProfile();
 
   const user = useAuthStore(
     (state) => state.user
@@ -36,12 +40,17 @@ export default function UserDropdown() {
         className="outline-none cursor-pointer"
       >
         <Avatar>
-          <AvatarFallback>
-            {user?.data?.email
-              ?.charAt(0)
-              .toUpperCase() ?? "U"}
-          </AvatarFallback>
-        </Avatar>
+  <AvatarImage
+    src={profile?.data?.profileImage}
+    alt={profile?.data?.fullName}
+  />
+
+  <AvatarFallback>
+    {user?.data?.email
+      ?.charAt(0)
+      .toUpperCase() ?? "U"}
+  </AvatarFallback>
+</Avatar>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent

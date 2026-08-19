@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { Metadata } from "next";
+
 interface Profile {
   _id: string;
   username: string;
@@ -47,41 +49,41 @@ interface Education {
   description?: string;
 }
 
-async function getProfile(username: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/profile/${username}`,
-    {
-      cache: "no-store",
-    }
-  );
+// async function getProfile(username: string) {
+//   const response = await fetch(
+//     `${process.env.NEXT_PUBLIC_API_URL}/profile/${username}`,
+//     {
+//       cache: "no-store",
+//     }
+//   );
 
-  if (!response.ok) {
-    return null;
-  }
+//   if (!response.ok) {
+//     return null;
+//   }
 
-  const data = await response.json();
+//   const data = await response.json();
 
   
 
-  return data.data as Profile;
-}
+//   return data.data as Profile;
+// }
 
-async function getProjects(username: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/projects/user/${username}`,
-    {
-      cache: "no-store",
-    }
-  );
+// async function getProjects(username: string) {
+//   const response = await fetch(
+//     `${process.env.NEXT_PUBLIC_API_URL}/projects/user/${username}`,
+//     {
+//       cache: "no-store",
+//     }
+//   );
 
-  if (!response.ok) {
-    return [];
-  }
+//   if (!response.ok) {
+//     return [];
+//   }
 
-  const data = await response.json();
+//   const data = await response.json();
 
-  return data.data;
-}
+//   return data.data;
+// }
 
 async function getPortfolio(
   username: string
@@ -100,6 +102,104 @@ async function getPortfolio(
   const data = await response.json();
 
   return data.data;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{
+    username: string;
+  }>;
+}): Promise<Metadata> {
+  const { username } = await params;
+
+  const portfolio =
+    await getPortfolio(username);
+
+  if (!portfolio) {
+    return {
+      title: "Portfolio Not Found",
+    };
+  }
+
+  const profile =
+    portfolio.profile;
+
+  return {
+  title: `${profile.fullName} | ${profile.headline}`,
+
+  description:
+    profile.bio ||
+
+    `${profile.fullName} Portfolio`,
+
+  keywords: [
+    profile.fullName,
+    profile.headline,
+    "Developer Portfolio",
+    "MERN Developer",
+    "Full Stack Developer",
+    "React Developer",
+    "Next.js Developer",
+  ],
+
+  authors: [
+    {
+      name: profile.fullName,
+    },
+  ],
+
+  creator: profile.fullName,
+
+  openGraph: {
+    title:
+      `${profile.fullName} | ${profile.headline}`,
+
+    description:
+      profile.bio,
+
+    url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/${profile.username}`,
+
+    siteName: "DevFolio",
+
+    type: "website",
+
+    images:
+      profile.profileImage
+        ? [
+            {
+              url: profile.profileImage,
+            },
+          ]
+        : [],
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      `${profile.fullName} | ${profile.headline}`,
+
+    description:
+      profile.bio,
+
+    images:
+      profile.profileImage
+        ? [profile.profileImage]
+        : [],
+  },
+
+  alternates: {
+    canonical:
+      `${process.env.NEXT_PUBLIC_CLIENT_URL}/${profile.username}`,
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 }
 
 export default async function PortfolioPage({
