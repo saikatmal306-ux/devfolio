@@ -26,17 +26,20 @@ export default function ProfilePage() {
   useState("");
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    username: "",
-    headline: "",
-    bio: "",
-    location: "",
-    website: "",
-    github: "",
-    linkedin: "",
-    profileImage: "",
-    resumeUrl: "",
-  });
+  fullName: "",
+  username: "",
+  headline: "",
+  bio: "",
+  location: "",
+  website: "",
+  github: "",
+  linkedin: "",
+  skills: [] as string[],
+  profileImage: "",
+  resumeUrl: "",
+});
+
+const [skillsText, setSkillsText] = useState("");
 
   useEffect(() => {
   if (!data?.data) return;
@@ -50,9 +53,13 @@ export default function ProfilePage() {
     website: data.data.website ?? "",
     github: data.data.github ?? "",
     linkedin: data.data.linkedin ?? "",
+    skills: data.data.skills ?? [],
     profileImage: data.data.profileImage ?? "",
     resumeUrl:data.data.resumeUrl ?? "",
   });
+  setSkillsText(
+  (data.data.skills ?? []).join(", ")
+);
 }, [data]);
 
 const handleImageUpload = async (
@@ -82,7 +89,15 @@ const handleImageUpload = async (
   ) => {
     e.preventDefault();
 
-    updateProfile.mutate(formData, {
+    const payload = {
+  ...formData,
+  skills: skillsText
+    .split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean),
+};
+
+updateProfile.mutate(payload, {
       onSuccess: () => {
         toast.success(
           "Profile updated successfully"
@@ -210,6 +225,13 @@ const handleImageUpload = async (
             })
           }
         />
+
+        <input
+  className="w-full rounded-lg border p-3"
+  placeholder="Separate skills with commas. Example: JavaScript, React, Node.js"
+  value={skillsText}
+  onChange={(e) => setSkillsText(e.target.value)}
+/>
 
         <input
           className="w-full rounded-lg border p-3"

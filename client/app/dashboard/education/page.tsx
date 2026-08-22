@@ -6,13 +6,24 @@ import {
   useEducation,
   useCreateEducation,
   useDeleteEducation,
+  useUpdateEducation,
 } from "@/features/education/education.api";
+
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Pencil,
+  Trash2,
+} from "lucide-react";
 
 export default function EducationPage() {
   const { data } = useEducation();
 
   const createEducation =
     useCreateEducation();
+
+  const updateEducation =
+  useUpdateEducation();
 
   const deleteEducation =
     useDeleteEducation();
@@ -28,14 +39,32 @@ export default function EducationPage() {
       description: "",
     });
 
+  const [editingId, setEditingId] =
+  useState<string | null>(null);
+
   const handleSubmit = async (
     e: React.FormEvent
   ) => {
     e.preventDefault();
 
-    await createEducation.mutateAsync(
-      form
-    );
+    if (editingId) {
+  await updateEducation.mutateAsync({
+    id: editingId,
+    payload: form,
+  });
+
+  toast.success(
+    "Education updated successfully"
+  );
+
+  setEditingId(null);
+} else {
+  await createEducation.mutateAsync(form);
+
+  toast.success(
+    "Education added successfully"
+  );
+}
 
     setForm({
       institution: "",
@@ -160,10 +189,40 @@ export default function EducationPage() {
 
         <button
           type="submit"
+          disabled={
+    createEducation.isPending ||
+    updateEducation.isPending
+  }
           className="rounded-lg border px-5 py-2"
         >
-          Add Education
+          {createEducation.isPending ||
+updateEducation.isPending
+  ? "Saving..."
+  : editingId
+  ? "Update Education"
+  : "Add Education"}
         </button>
+        {editingId && (
+  <Button
+    type="button"
+    variant="outline"
+    onClick={() => {
+      setEditingId(null);
+
+      setForm({
+        institution: "",
+        degree: "",
+        fieldOfStudy: "",
+        startDate: "",
+        endDate: "",
+        current: false,
+        description: "",
+      });
+    }}
+  >
+    Cancel Edit
+  </Button>
+)}
       </form>
 
       <div className="space-y-4">
@@ -210,16 +269,69 @@ export default function EducationPage() {
                 </p>
               )}
 
-              <button
-                onClick={() =>
-                  deleteEducation.mutate(
-                    education._id
-                  )
-                }
-                className="mt-4 rounded-lg border px-4 py-2"
-              >
-                Delete
-              </button>
+              <div className="mt-4 flex gap-2">
+  <Button
+    variant="outline"
+    size="sm"
+    onClick={() => {
+      setEditingId(education._id);
+
+      setForm({
+        institution:
+          education.institution,
+
+        degree:
+          education.degree,
+
+        fieldOfStudy:
+          education.fieldOfStudy,
+
+        startDate:
+          education.startDate?.split("T")[0] || "",
+
+        endDate:
+          education.endDate?.split("T")[0] || "",
+
+        current:
+          education.current || false,
+
+        description:
+          education.description || "",
+      });
+    }}
+  >
+    <Pencil className="h-4 w-4" />
+    Edit
+  </Button>
+
+  <Button
+    variant="destructive"
+    size="sm"
+    disabled={deleteEducation.isPending}
+    onClick={() => {
+      if (
+  !window.confirm(
+    "Are you sure you want to delete this education?"
+  )
+)
+  return;
+      deleteEducation.mutate(
+        education._id,
+        {
+    onSuccess: () => {
+      toast.success(
+        "Education deleted successfully"
+      );
+    },
+  }
+      )
+    }
+  }
+  >
+    <Trash2 className="h-4 w-4" />
+    Delete
+  </Button>
+</div>
             </div>
           )
         )}

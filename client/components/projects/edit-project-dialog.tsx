@@ -48,6 +48,7 @@ export default function EditProjectDialog({
         techStack: "",
         githubUrl: "",
         liveUrl: "",
+        featured: false,
       },
     });
 
@@ -62,6 +63,7 @@ export default function EditProjectDialog({
         project.githubUrl || "",
       liveUrl:
         project.liveUrl || "",
+      featured: project.featured,
     });
   }, [project, form]);
 
@@ -89,6 +91,8 @@ export default function EditProjectDialog({
 
           liveUrl:
             values.liveUrl,
+
+          featured: values.featured,
         },
       },
       {
@@ -198,6 +202,22 @@ export default function EditProjectDialog({
           p-3
           "
         />
+
+        <div className="flex items-center gap-3 rounded-lg border p-4">
+  <input
+    id="featured"
+    type="checkbox"
+    {...form.register("featured")}
+    className="h-4 w-4"
+  />
+
+  <label
+    htmlFor="featured"
+    className="cursor-pointer text-sm font-medium"
+  >
+    Feature this project on my portfolio
+  </label>
+</div>
 
         <Button
           type="submit"

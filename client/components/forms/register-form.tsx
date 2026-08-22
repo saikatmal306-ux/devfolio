@@ -3,6 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +27,8 @@ export default function RegisterForm() {
   const registerMutation =
     useRegister();
 
+    const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -43,10 +47,14 @@ export default function RegisterForm() {
       data,
       {
         onSuccess: () => {
-          toast.success(
-            "Account created"
-          );
-        },
+  toast.success(
+    "Account created successfully. Redirecting to login..."
+  );
+
+  setTimeout(() => {
+    router.push("/login");
+  }, 1000);
+},
 
         onError: () => {
           toast.error(
@@ -110,6 +118,15 @@ export default function RegisterForm() {
               ? "Loading..."
               : "Register"}
           </Button>
+          <p className="text-center text-sm text-muted-foreground">
+  Already have an account?{" "}
+  <Link
+    href="/login"
+    className="font-medium hover:underline"
+  >
+    Sign In
+  </Link>
+</p>
         </form>
       </CardContent>
     </Card>

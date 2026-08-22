@@ -6,7 +6,14 @@ import {
   useExperiences,
   useCreateExperience,
   useDeleteExperience,
+  useUpdateExperience,
 } from "@/features/experience/experience.api";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Pencil,
+  Trash2,
+} from "lucide-react";
 
 export default function ExperiencePage() {
   const { data, isLoading } =
@@ -17,6 +24,12 @@ export default function ExperiencePage() {
 
   const deleteExperience =
     useDeleteExperience();
+
+  const updateExperience =
+  useUpdateExperience();
+
+  const [editingId, setEditingId] =
+  useState<string | null>(null);
 
   const [form, setForm] = useState({
     company: "",
@@ -32,9 +45,33 @@ export default function ExperiencePage() {
   ) => {
     e.preventDefault();
 
-    await createExperience.mutateAsync(
-      form
-    );
+    if (editingId) {
+  await updateExperience.mutateAsync({
+    id: editingId,
+    payload: form,
+    
+  },
+{
+    onSuccess: () => {
+      toast.success(
+        "Experience updated successfully"
+      );
+    },
+  });
+
+  setEditingId(null);
+} else {
+  await createExperience.mutateAsync(
+    form,
+    {
+    onSuccess: () => {
+      toast.success(
+        "Experience added successfully"
+      );
+    },
+  }
+  );
+}
 
     setForm({
       company: "",
@@ -146,10 +183,40 @@ export default function ExperiencePage() {
 
         <button
           type="submit"
+          disabled={
+    createExperience.isPending ||
+    updateExperience.isPending
+  }
           className="rounded-lg border px-6 py-3"
         >
-          Add Experience
+          {createExperience.isPending ||
+updateExperience.isPending
+  ? "Saving..."
+  : editingId
+  ? "Update Experience"
+  : "Add Experience"}
         </button>
+
+        {editingId && (
+  <Button
+    type="button"
+    variant="outline"
+    onClick={() => {
+      setEditingId(null);
+
+      setForm({
+      company: "",
+      position: "",
+      startDate: "",
+      endDate: "",
+      current: false,
+      description: "",
+    });
+    }}
+  >
+    Cancel Edit
+  </Button>
+)}
       </form>
 
       <div className="space-y-4">
@@ -187,16 +254,62 @@ export default function ExperiencePage() {
                 </p>
               )}
 
-              <button
-                onClick={() =>
-                  deleteExperience.mutate(
-                    experience._id
-                  )
-                }
-                className="mt-4 rounded-lg border px-4 py-2"
-              >
-                Delete
-              </button>
+              <div className="mt-4 flex gap-2">
+  <Button
+    variant="outline"
+    size="sm"
+    onClick={() => {
+      setEditingId(experience._id);
+
+      setForm({
+        company: experience.company,
+        position: experience.position,
+
+        startDate:
+          experience.startDate?.split("T")[0] || "",
+
+        endDate:
+          experience.endDate?.split("T")[0] || "",
+
+        current: experience.current || false,
+
+        description:
+          experience.description || "",
+      });
+    }}
+  >
+    <Pencil className="h-4 w-4" />
+     Edit
+  </Button>
+
+  <Button
+    variant="destructive"
+    size="sm"
+    disabled={deleteExperience.isPending}
+    onClick={() => {
+      if (
+  !window.confirm(
+    "Are you sure you want to delete this experience?"
+  )
+)
+  return;
+      deleteExperience.mutate(
+        experience._id,
+        {
+    onSuccess: () => {
+      toast.success(
+        "Experience deleted successfully"
+      );
+    },
+  }
+      )
+    }
+  }
+  >
+    <Trash2 className="h-4 w-4" />
+    Delete
+  </Button>
+</div>
             </div>
           )
         )}

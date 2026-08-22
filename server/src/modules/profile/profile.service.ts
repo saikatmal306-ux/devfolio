@@ -51,24 +51,23 @@ export const updateProfile = async (
   userId: string,
   payload: UpdateProfileInput
 ) => {
-  const profile =
-    await Profile.findOneAndUpdate(
-      {
+  const profile = await Profile.findOneAndUpdate(
+    {
+      user: userId,
+    },
+    {
+      $set: payload,
+      $setOnInsert: {
         user: userId,
       },
-      payload,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-  if (!profile) {
-    throw new AppError(
-      "Profile not found",
-      404
-    );
-  }
+    },
+    {
+  upsert: true,
+  returnDocument: "after",
+  runValidators: true,
+  setDefaultsOnInsert: true,
+}
+  );
 
   return profile;
 };

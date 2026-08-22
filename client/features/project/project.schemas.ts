@@ -16,6 +16,8 @@ export const createProjectSchema = z.object({
   githubUrl: z.string().optional(),
 
   liveUrl: z.string().optional(),
+
+  featured: z.boolean(),
 });
 
 export type CreateProjectFormValues =

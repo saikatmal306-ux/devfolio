@@ -32,26 +32,81 @@ export const createProfileSchema = z.object({
     .optional(),
 
   website: z
-    .url("Please provide a valid website URL")
-    .optional(),
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) =>
+      !value ||
+      /^https?:\/\/.+/.test(value),
+    {
+      message:
+        "Please provide a valid website URL",
+    }
+  ),
 
-  github: z
-    .url("Please provide a valid GitHub URL")
-    .optional(),
+github: z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) =>
+      !value ||
+      /^https?:\/\/.+/.test(value),
+    {
+      message:
+        "Please provide a valid GitHub URL",
+    }
+  ),
 
-  linkedin: z
-    .url("Please provide a valid LinkedIn URL")
-    .optional(),
+linkedin: z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) =>
+      !value ||
+      /^https?:\/\/.+/.test(value),
+    {
+      message:
+        "Please provide a valid LinkedIn URL",
+    }
+  ),
 
   skills: z
     .array(z.string().trim())
     .min(1, "At least one skill is required"),
 
-  profileImage:
-  z.string().url().optional(),
+  profileImage: z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) =>
+      !value ||
+      /^https?:\/\/.+/.test(value),
+    {
+      message: "Invalid profile image URL",
+    }
+  ),
 
-  resumeUrl:
-    z.string().url().optional(),
+  resumeUrl: z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) =>
+      !value ||
+      /^https?:\/\/.+/.test(value),
+    {
+      message: "Invalid resume URL",
+    }
+  ),
 });
 
 export type CreateProfileInput =

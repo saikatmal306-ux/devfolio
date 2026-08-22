@@ -42,6 +42,7 @@ const [imageUrl, setImageUrl] =
         techStack: "",
         githubUrl: "",
         liveUrl: "",
+        featured: false,
       },
     });
 
@@ -66,6 +67,8 @@ const [imageUrl, setImageUrl] =
           values.liveUrl,
 
         image: imageUrl,
+
+        featured: values.featured,
       },
       {
         onSuccess: () => {
@@ -181,10 +184,8 @@ const [imageUrl, setImageUrl] =
     setFileName(file.name);
 
     uploadImage.mutate(file, {
-      onSuccess: (res) => {
-        setImageUrl(
-          res.data.url
-        );
+      onSuccess: (url) => {
+        setImageUrl(url);
 
         toast.success(
           "Image uploaded"
@@ -240,6 +241,23 @@ const [imageUrl, setImageUrl] =
             p-3
             "
           />
+
+  <div className="flex items-center gap-3 rounded-lg border p-4">
+  <input
+    id="featured"
+    type="checkbox"
+    {...form.register("featured")}
+    className="h-4 w-4"
+  />
+
+  <label
+    htmlFor="featured"
+    className="cursor-pointer text-sm font-medium"
+  >
+    Feature this project on my portfolio
+  </label>
+</div>
+
 
           <Button
             type="submit"
