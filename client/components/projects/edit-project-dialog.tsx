@@ -179,29 +179,43 @@ export default function EditProjectDialog({
           "
         />
 
-        <input
-          {...form.register(
-            "githubUrl"
-          )}
-          className="
-          w-full
-          rounded-md
-          border
-          p-3
-          "
-        />
+        <div className="space-y-1">
+  <input
+    {...form.register("githubUrl")}
+    placeholder="Github URL"
+    className="
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
 
-        <input
-          {...form.register(
-            "liveUrl"
-          )}
-          className="
-          w-full
-          rounded-md
-          border
-          p-3
-          "
-        />
+  {form.formState.errors.githubUrl && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.githubUrl.message}
+    </p>
+  )}
+</div>
+
+        <div className="space-y-1">
+  <input
+    {...form.register("liveUrl")}
+    placeholder="Live URL"
+    className="
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
+
+  {form.formState.errors.liveUrl && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.liveUrl.message}
+    </p>
+  )}
+</div>
 
         <div className="flex items-center gap-3 rounded-lg border p-4">
   <input

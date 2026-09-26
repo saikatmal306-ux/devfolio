@@ -13,9 +13,17 @@ export const createProjectSchema = z.object({
     "Tech stack is required"
   ),
 
-  githubUrl: z.string().optional(),
+  githubUrl: z
+  .string()
+  .url("Please enter a valid GitHub URL")
+  .optional()
+  .or(z.literal("")),
 
-  liveUrl: z.string().optional(),
+  liveUrl: z
+  .string()
+  .url("Please enter a valid Live URL")
+  .optional()
+  .or(z.literal("")),
 
   featured: z.boolean(),
 });

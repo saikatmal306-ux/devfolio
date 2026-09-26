@@ -30,6 +30,9 @@ const [imageUrl, setImageUrl] =
 
   const [fileName, setFileName] = useState("");
 
+  const [isUploading, setIsUploading] =
+  useState(false);
+
   const form =
     useForm<CreateProjectFormValues>({
       resolver: zodResolver(
@@ -46,10 +49,18 @@ const [imageUrl, setImageUrl] =
       },
     });
 
-  const onSubmit = (
+ const onSubmit = (
   values: CreateProjectFormValues
 ) => {
-    createProject.mutate(
+  if (isUploading) {
+    toast.error(
+      "Please wait for the image upload to finish"
+    );
+
+    return;
+  }
+
+  createProject.mutate(
       {
         title: values.title,
         description:
@@ -78,7 +89,8 @@ const [imageUrl, setImageUrl] =
 
           form.reset();
           
-          
+           setImageUrl("");
+  setFileName("");
         },
       }
     );
@@ -101,43 +113,63 @@ const [imageUrl, setImageUrl] =
           p-6
           "
         >
-          <input
-            placeholder="Project title"
-            {...form.register(
-              "title"
-            )}
-            className="
-            w-full
-            rounded-md
-            border
-            p-3
-            "
-          />
+          <div className="space-y-1">
+  <input
+    placeholder="Project title"
+    {...form.register("title")}
+    className="
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
 
-          <textarea
-            placeholder="Description"
-            {...form.register(
-              "description"
-            )}
-            className="
-            min-h-30
-            w-full
-            rounded-md
-            border
-            p-3
-            "
-          />
+  {form.formState.errors.title && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.title.message}
+    </p>
+  )}
+</div>
 
-          <input
-  placeholder="Separate technologies with commas. Example: React, Node.js, Express.js"
-  {...form.register("techStack")}
-  className="
-  w-full
-  rounded-md
-  border
-  p-3
-  "
-/>
+         <div className="space-y-1">
+  <textarea
+    placeholder="Description"
+    {...form.register("description")}
+    className="
+      min-h-30
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
+
+  {form.formState.errors.description && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.description.message}
+    </p>
+  )}
+</div>
+
+          <div className="space-y-1">
+  <input
+    placeholder="Separate technologies with commas. Example: React, Node.js, Express.js"
+    {...form.register("techStack")}
+    className="
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
+
+  {form.formState.errors.techStack && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.techStack.message}
+    </p>
+  )}
+</div>
 
 <div className="space-y-2">
   <label className="text-sm font-medium">
@@ -176,29 +208,35 @@ const [imageUrl, setImageUrl] =
   accept="image/*"
   className="hidden"
   onChange={(e) => {
-    const file =
-      e.target.files?.[0];
+  const file =
+    e.target.files?.[0];
 
-    if (!file) return;
+  if (!file) return;
 
-    setFileName(file.name);
+  setFileName(file.name);
+  setImageUrl("");
+  setIsUploading(true);
 
-    uploadImage.mutate(file, {
-      onSuccess: (url) => {
-        setImageUrl(url);
+  uploadImage.mutate(file, {
+    onSuccess: (url) => {
+      setImageUrl(url);
+      setIsUploading(false);
 
-        toast.success(
-          "Image uploaded"
-        );
-      },
+      toast.success(
+        "Image uploaded"
+      );
+    },
 
-      onError: () => {
-        toast.error(
-          "Upload failed"
-        );
-      },
-    });
-  }}
+    onError: () => {
+      setImageUrl("");
+      setIsUploading(false);
+
+      toast.error(
+        "Upload failed"
+      );
+    },
+  });
+}}
 />
 
   {imageUrl && (
@@ -216,31 +254,43 @@ const [imageUrl, setImageUrl] =
   )}
 </div>
 
-          <input
-            placeholder="Github URL"
-            {...form.register(
-              "githubUrl"
-            )}
-            className="
-            w-full
-            rounded-md
-            border
-            p-3
-            "
-          />
+          <div className="space-y-1">
+  <input
+    placeholder="Github URL"
+    {...form.register("githubUrl")}
+    className="
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
 
-          <input
-            placeholder="Live URL"
-            {...form.register(
-              "liveUrl"
-            )}
-            className="
-            w-full
-            rounded-md
-            border
-            p-3
-            "
-          />
+  {form.formState.errors.githubUrl && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.githubUrl.message}
+    </p>
+  )}
+</div>
+
+          <div className="space-y-1">
+  <input
+    placeholder="Live URL"
+    {...form.register("liveUrl")}
+    className="
+      w-full
+      rounded-md
+      border
+      p-3
+    "
+  />
+
+  {form.formState.errors.liveUrl && (
+    <p className="text-sm text-destructive">
+      {form.formState.errors.liveUrl.message}
+    </p>
+  )}
+</div>
 
   <div className="flex items-center gap-3 rounded-lg border p-4">
   <input
@@ -260,11 +310,19 @@ const [imageUrl, setImageUrl] =
 
 
           <Button
-            type="submit"
-            className="w-full"
-          >
-            Create Project
-          </Button>
+  type="submit"
+  className="w-full"
+  disabled={
+    createProject.isPending ||
+    uploadImage.isPending
+  }
+>
+  {uploadImage.isPending
+    ? "Uploading Image..."
+    : createProject.isPending
+    ? "Creating Project..."
+    : "Create Project"}
+</Button>
         </form>
       
     </div>

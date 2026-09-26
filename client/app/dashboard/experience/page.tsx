@@ -41,47 +41,40 @@ export default function ExperiencePage() {
   });
 
   const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+  e: React.FormEvent
+) => {
+  e.preventDefault();
 
-    if (editingId) {
-  await updateExperience.mutateAsync({
-    id: editingId,
-    payload: form,
-    
-  },
-{
-    onSuccess: () => {
-      toast.success(
-        "Experience updated successfully"
-      );
-    },
-  });
-
-  setEditingId(null);
-} else {
-  await createExperience.mutateAsync(
-    form,
-    {
-    onSuccess: () => {
-      toast.success(
-        "Experience added successfully"
-      );
-    },
-  }
-  );
-}
-
-    setForm({
-      company: "",
-      position: "",
-      startDate: "",
-      endDate: "",
-      current: false,
-      description: "",
+  if (editingId) {
+    await updateExperience.mutateAsync({
+      id: editingId,
+      payload: form,
     });
-  };
+
+    toast.success(
+      "Experience updated successfully"
+    );
+
+    setEditingId(null);
+  } else {
+    await createExperience.mutateAsync(
+      form
+    );
+
+    toast.success(
+      "Experience created successfully"
+    );
+  }
+
+  setForm({
+    company: "",
+    position: "",
+    startDate: "",
+    endDate: "",
+    current: false,
+    description: "",
+  });
+};  
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -259,24 +252,26 @@ updateExperience.isPending
     variant="outline"
     size="sm"
     onClick={() => {
-      setEditingId(experience._id);
+  setEditingId(experience._id);
 
-      setForm({
-        company: experience.company,
-        position: experience.position,
+  setForm({
+  company: experience.company,
 
-        startDate:
-          experience.startDate?.split("T")[0] || "",
+  position: experience.position,
 
-        endDate:
-          experience.endDate?.split("T")[0] || "",
+  startDate:
+    experience.startDate?.split("T")[0] || "",
 
-        current: experience.current || false,
+  endDate:
+    experience.endDate?.split("T")[0] || "",
 
-        description:
-          experience.description || "",
-      });
-    }}
+  current:
+    experience.current || false,
+
+  description:
+    experience.description || "",
+});
+}}
   >
     <Pencil className="h-4 w-4" />
      Edit
