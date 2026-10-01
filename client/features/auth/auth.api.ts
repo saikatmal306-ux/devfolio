@@ -9,13 +9,15 @@ import {
   getCurrentUser,
   logoutUser,
 } from "@/services/auth.service";
+
 import { useAuthStore } from "./auth.store";
 
-export const useRegister =
-  () =>
-    useMutation({
-      mutationFn: registerUser,
-    });
+import { queryClient } from "@/lib/react-query";
+
+export const useRegister = () =>
+  useMutation({
+    mutationFn: registerUser,
+  });
 
 export const useLogin = () => {
   const setUser = useAuthStore(
@@ -30,23 +32,27 @@ export const useLogin = () => {
         await getCurrentUser();
 
       setUser(res.data);
+
+      queryClient.invalidateQueries({
+        queryKey: ["me"],
+      });
     },
   });
 };
 
-export const useCurrentUser =
-  () =>
-    useQuery({
-      queryKey: ["me"],
-      queryFn: async () => {
-        const res =
-          await getCurrentUser();
+export const useCurrentUser = () =>
+  useQuery({
+    queryKey: ["me"],
 
-        return res.data;
-      },
-    });
+    queryFn: async () => {
+      const res =
+        await getCurrentUser();
 
-    export const useLogout = () => {
+      return res.data;
+    },
+  });
+
+export const useLogout = () => {
   const clearUser =
     useAuthStore(
       (state) => state.clearUser
@@ -57,6 +63,12 @@ export const useCurrentUser =
 
     onSuccess: () => {
       clearUser();
+
+      queryClient.removeQueries({
+        queryKey: ["me"],
+      });
+
+      queryClient.clear();
     },
   });
 };
