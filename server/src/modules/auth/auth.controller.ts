@@ -32,14 +32,14 @@ export const login = asyncHandler(
       await loginUser(payload);
 
     res.cookie(
-      "token",
-      result.token,
-      {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-      }
-    );
+  "token",
+  result.token,
+  {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  }
+);
 
     res.status(200).json({
       success: true,
