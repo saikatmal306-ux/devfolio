@@ -63,10 +63,14 @@ export default function UserDropdown() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          Profile
-        </DropdownMenuItem>
+        <DropdownMenuItem
+  onClick={() =>
+    router.push("/dashboard/profile")
+  }
+>
+  <User className="mr-2 h-4 w-4" />
+  Profile
+</DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
