@@ -34,10 +34,15 @@ export default function ProtectedRoute({
   }, [data, user, setUser]);
 
   useEffect(() => {
-    if (!isLoading && isError) {
+    if (!isLoading && (isError || !data)) {
       router.replace("/login");
     }
-  }, [isLoading, isError, router]);
+  }, [
+    isLoading,
+    isError,
+    data,
+    router,
+  ]);
 
   if (isLoading) {
     return (
@@ -45,6 +50,10 @@ export default function ProtectedRoute({
         Loading...
       </div>
     );
+  }
+
+  if (isError || !data) {
+    return null;
   }
 
   return <>{children}</>;

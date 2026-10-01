@@ -68,7 +68,7 @@ export const useLogout = () => {
         queryKey: ["me"],
       });
 
-      queryClient.clear();
+      
     },
   });
 };
