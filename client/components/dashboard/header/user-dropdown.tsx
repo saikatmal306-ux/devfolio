@@ -77,7 +77,13 @@ export default function UserDropdown() {
                 toast.success(
                   "Logged out"
                 );
-
+              },
+              onError: () => {
+                toast.error(
+                  "Could not confirm logout. Please sign in again if your session remains active."
+                );
+              },
+              onSettled: () => {
                 router.replace("/login");
               },
             })

@@ -61,14 +61,12 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: logoutUser,
 
-    onSuccess: () => {
+    onSettled: () => {
       clearUser();
 
       queryClient.removeQueries({
         queryKey: ["me"],
       });
-
-      
     },
   });
 };

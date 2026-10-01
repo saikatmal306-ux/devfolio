@@ -5,6 +5,13 @@ import { registerSchema, loginSchema, } from "./auth.validation";
 
 import { registerUser, loginUser, getCurrentUser, logoutUser } from "./auth.service";
 
+const AUTH_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none" as const,
+  path: "/",
+};
+
 export const register = asyncHandler(
   async (req: Request, res: Response) => {
     const payload = registerSchema.parse(req.body);
@@ -31,15 +38,7 @@ export const login = asyncHandler(
     const result =
       await loginUser(payload);
 
-    res.cookie(
-  "token",
-  result.token,
-  {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  }
-);
+    res.cookie("token", result.token, AUTH_COOKIE_OPTIONS);
 
     res.status(200).json({
       success: true,
@@ -72,7 +71,7 @@ export const logout = (
   _req: Request,
   res: Response
 ) => {
-  res.clearCookie("token");
+  res.clearCookie("token", AUTH_COOKIE_OPTIONS);
 
   const result = logoutUser();
 

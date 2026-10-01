@@ -15,6 +15,8 @@ router.get(
   me
 );
 
-router.post( "/logout", authenticate, logout);
+// Logout must be callable with an expired or otherwise invalid token so the
+// browser can always receive the cookie-clearing response.
+router.post("/logout", logout);
 
 export default router;

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 import { useCurrentUser } from "@/features/auth/auth.api";
 import { useAuthStore } from "@/features/auth/auth.store";
@@ -25,7 +26,13 @@ export default function ProtectedRoute({
     data,
     isLoading,
     isError,
+    error,
+    refetch,
   } = useCurrentUser();
+
+  const isUnauthorized =
+    axios.isAxiosError(error) &&
+    error.response?.status === 401;
 
   useEffect(() => {
     if (data && !user) {
@@ -34,13 +41,12 @@ export default function ProtectedRoute({
   }, [data, user, setUser]);
 
   useEffect(() => {
-    if (!isLoading && (isError || !data)) {
+    if (!isLoading && isUnauthorized) {
       router.replace("/login");
     }
   }, [
     isLoading,
-    isError,
-    data,
+    isUnauthorized,
     router,
   ]);
 
@@ -52,8 +58,22 @@ export default function ProtectedRoute({
     );
   }
 
-  if (isError || !data) {
+  if (isUnauthorized || (!isError && !data)) {
     return null;
+  }
+
+  if (isError) {
+    return (
+      <div className="p-8" role="alert">
+        <p>Unable to verify your session.</p>
+        <button
+          className="mt-2 underline"
+          onClick={() => void refetch()}
+        >
+          Try again
+        </button>
+      </div>
+    );
   }
 
   return <>{children}</>;
