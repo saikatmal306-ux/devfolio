@@ -24,10 +24,9 @@ export default function DashboardLayout({
           pb-20
           "
         >
+          <MobileNav />
           {children}
         </main>
-
-        <MobileNav />
       </div>
     </ProtectedRoute>
   );
